@@ -17,6 +17,7 @@ function createCate(categories, parentId = null) {
       _id: cate._id,
       name: cate.name,
       slug: cate.slug,
+      parentId:cate.parentId,
       children: createCate(categories, cate._id)
     })
   }
@@ -44,6 +45,7 @@ module.exports.createCategory = (req, res, next) => {
     // categoryImage: categoryUrl
   }
   if (req.file) {
+    console.log("file")
     categoryObj.categoryImage = 'http://localhost:5000/public/' + req.file.filename;
   }
   if (req.body.parentId) {

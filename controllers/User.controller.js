@@ -7,7 +7,7 @@ const { validateCreateUser } = require("../middleware/validation/User/create-use
 const { validateLoginUser } = require("../middleware/validation/User/Login-user.validation");
 const { validateUpdatePassword } = require("../middleware/validation/User/update-password.validation");
 const { validateResetPassword } = require("../middleware/validation/User/reset-passpord");
-router.post("/user", validateCreateUser, createUser);
+router.post("/register", validateCreateUser, createUser);
 router.post("/login", validateLoginUser, login);
 router.patch("/update_password", validateUpdatePassword, updatePassword);
 router.get("/me", authenticate, authorization(["Admin", "Member"]), getMe);

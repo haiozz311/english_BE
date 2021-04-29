@@ -7,6 +7,7 @@ module.exports.validateCreateUser = async (req, res, next) => {
   const password = req.body.password;
   const password2 = req.body.password2;
   const fullName = req.body.fullName;
+  const phoneNumber = req.body.phoneNumber;
   // const userType = req.body.userType;
   const error = {};
   //email
@@ -33,6 +34,9 @@ module.exports.validateCreateUser = async (req, res, next) => {
   //fullname
   if (!fullName) {
     error.fullName = "fullname is required";
+  }
+  if (!phoneNumber) {
+    error.phoneNumber = "phoneNumber is required";
   }
 
   if (Object.keys(error).length > 0) {

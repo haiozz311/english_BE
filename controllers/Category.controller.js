@@ -18,5 +18,5 @@ const upload = multer({
   storage
 });
 router.get('/category', getCategory);
-router.post("/category", authenticate, authorization(["Admin"]), upload.single('categoryImage'), createCategory);
+router.post("/category", authenticate, authorization(["Admin"]), upload.single('categoryImage'), validateCreateCategory, createCategory);
 module.exports = router;

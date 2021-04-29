@@ -27,7 +27,7 @@ module.exports.createUser = (req, res, next) => {
   //   })
   User.create({ email, password, fullName, phoneNumber })
     .then((user) => {
-      res.status(200).json(user);
+      res.status(200).json({ message: 'Register successfully', user });
     })
     .catch((err) => {
       res.status(500).json(err);

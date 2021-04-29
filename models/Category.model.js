@@ -1,8 +1,8 @@
 const mongoose = require("mongoose")
 const CategorySchema = mongoose.Schema({
   name: { type: String, required: true },
-  slug: { type: String, required: true, unique: true },
-  categoryImage:{ type: String },
+  slug: { type: String, required: true },
+  categoryImage: { type: String },
   parentId: { type: String }
 }, { timestamps: true })
 
