@@ -1,5 +1,5 @@
 const express = require("express");
-const { createProduct } = require("../services/Product.service");
+const { createProduct, getProduct, getProductbySlug } = require("../services/Product.service");
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
@@ -18,6 +18,7 @@ const upload = multer({
 const { authenticate, authorization } = require("../middleware/auth/index");
 // const { validateCreateCategory } = require("../middleware/validation/Category/create-category.validate");
 
-// router.get('/category', getCategory);
+router.get('/getProduct', getProduct);
+router.get('/getProduct/:slug', getProductbySlug);
 router.post("/product", authenticate, authorization(["Admin"]), upload.array('productPicture'), createProduct);
 module.exports = router;

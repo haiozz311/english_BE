@@ -1,41 +1,19 @@
 // const { Schema } = require("mongoose");
 const { Product } = require("../models/Product.model");
+const { Category } = require("../models/Category.model")
 const slugify = require('slugify')
 
+module.exports.getProduct = (req, res, next) => {
 
-
-
-function createCate(categories, parentId = null) {
-  const categoryList = [];
-  let category;
-  if (parentId == null) {
-    console.log("categories", categories);
-    category = categories.filter(cate => cate.parentId == undefined)
-  } else {
-    category = categories.filter(cate => cate.parentId == parentId)
-  }
-  for (let cate of category) {
-    categoryList.push({
-      _id: cate._id,
-      name: cate.name,
-      slug: cate.slug,
-      children: createCate(categories, cate._id)
+  return Product.find()
+    .populate('category')
+    .then((products) => {
+      return res.status(200).json(products);
     })
-  }
-  return categoryList;
-}
-
-// module.exports.getCategory = (req, res, next) => {
-
-//   return Category.find()
-//     .then((categories) => {
-//       const CategoryList = createCate(categories);
-//       return res.status(200).json(CategoryList);
-//     })
-//     .catch((err) => {
-//       return res.status(500).json(err);
-//     });
-// };
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
+};
 
 
 module.exports.createProduct = (req, res, next) => {
@@ -66,22 +44,28 @@ module.exports.createProduct = (req, res, next) => {
     })
 };
 
-module.exports.replaceStation = (req, res, next) => {
-  const { stationId } = req.params;
-  const { name, address, province } = req.body;
-  Station.findById(stationId)
-    .then((station) => {
-      if (!station)
-        return Promise.reject({
-          status: 404,
-          Message: "Station Not Found",
-        });
-      Object.keys(Object.keys(Station.schema.obj)).forEach((key) => {
-        station[key] = req.body[key];
-      });
-      return station.save();
+module.exports.getProductbySlug = (req, res, next) => {
+  const { slug } = req.params;
+  Category.findOne({ slug: slug })
+    .select('_id')
+    .then((category) => {
+      Product.find({ category: category._id })
+        .then((products) => {
+          if (products.length > 0) {
+            res.status(200).json({
+              products,
+              productsByPrice: {
+                under5k: products.filter(product => product.price <= 5000),
+                under10k: products.filter(product => product.price > 5000 && product.price <= 10000),
+                under15k: products.filter(product => product.price > 10000 && product.price <= 15000),
+                under20k: products.filter(product => product.price > 15000 && product.price <= 20000),
+                under30k: products.filter(product => product.price > 20000 && product.price <= 30000),
+              }
+            })
+          }
+        })
+        .catch((err) => res.status(500).json(err));
     })
-    .then((station) => res.status(200).json(station))
     .catch((err) => res.status(500).json(err));
 };
 
@@ -120,23 +104,22 @@ module.exports.getStationById = (req, res, next) => {
         });
       return res.status(200).json(station);
     })
-    // .then((station) => res.status(200).json(station))
     .catch((err) => res.status(500).json(err));
 };
 
-module.exports.deleteStationById = (req, res, next) => {
-  const { stationId } = req.params;
-  let _station;
-  Station.findById(stationId)
-    .then((station) => {
-      if (!station)
-        return Promise.reject({
-          status: 404,
-          Message: "Station Not Found",
-        });
-      _station = station;
-      return station.deleteOne();
-    })
-    .then(() => res.status(200).json(_station))
-    .catch((err) => res.status(500).json(err));
-};
+// module.exports.deleteStationById = (req, res, next) => {
+//   const { stationId } = req.params;
+//   let _station;
+//   Station.findById(stationId)
+//     .then((station) => {
+//       if (!station)
+//         return Promise.reject({
+//           status: 404,
+//           Message: "Station Not Found",
+//         });
+//       _station = station;
+//       return station.deleteOne();
+//     })
+//     .then(() => res.status(200).json(_station))
+//     .catch((err) => res.status(500).json(err));
+// };
