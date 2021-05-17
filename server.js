@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser');
 var cors = require("cors");
 const config = require("./config/index");
 const path = require('path');
@@ -8,7 +9,12 @@ const userController = require("./controllers/User.controller");
 const contegoryController = require("./controllers/Category.controller");
 const productController = require("./controllers/Product.controller");
 const cartController = require("./controllers/Cart.controller");
+const PageController = require("./controllers/Page.controller");
+const AddressController = require("./controllers/Address.controller");
+const OrderController = require("./controllers/Order.controller");
 // handle Router
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 app.use('/public', express.static(path.join(__dirname, 'uploads')))
@@ -16,6 +22,9 @@ app.use("/api", userController);
 app.use("/api", contegoryController);
 app.use("/api", productController);
 app.use("/api", cartController);
+app.use("/api", PageController);
+app.use("/api", AddressController);
+app.use("/api", OrderController);
 
 // app.use("/img", express.static("img"));
 // img1 la ten duong dan tren brower

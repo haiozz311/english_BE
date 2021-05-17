@@ -17,7 +17,8 @@ function createCate(categories, parentId = null) {
       _id: cate._id,
       name: cate.name,
       slug: cate.slug,
-      parentId:cate.parentId,
+      parentId: cate.parentId,
+      type: cate.type,
       children: createCate(categories, cate._id)
     })
   }
@@ -62,82 +63,59 @@ module.exports.createCategory = (req, res, next) => {
     })
 };
 
-// get ko co body
-// post push patch co body
-// put ̣: replace
-//PUT/api/station:stationID
-//body: {name,address,province}
-module.exports.replaceStation = (req, res, next) => {
-  const { stationId } = req.params;
-  const { name, address, province } = req.body;
-  Station.findById(stationId)
-    .then((station) => {
-      if (!station)
-        return Promise.reject({
-          status: 404,
-          Message: "Station Not Found",
-        });
-      Object.keys(Object.keys(Station.schema.obj)).forEach((key) => {
-        station[key] = req.body[key];
-      });
-      return station.save();
-    })
-    .then((station) => res.status(200).json(station))
-    .catch((err) => res.status(500).json(err));
+
+module.exports.updateCategory = async (req, res, next) => {
+  const { _id, name, parentId, type } = req.body;
+  const updatedCategories = [];
+  if (name instanceof Array) {
+    for (let i = 0; i < name.length; i++) {
+      const category = {
+        name: name[i],
+        type: type[i],
+      };
+      if (parentId[i] !== "") {
+        category.parentId = parentId[i];
+      }
+
+      const updatedCategory = await Category.findOneAndUpdate(
+        { _id: _id[i] },
+        category,
+        { new: true }
+      );
+      updatedCategories.push(updatedCategory);
+    }
+    return res.status(201).json({ updateCategories: updatedCategories });
+  } else {
+    const category = {
+      name,
+      type,
+    };
+    if (parentId !== "") {
+      category.parentId = parentId;
+    }
+    const updatedCategory = await Category.findOneAndUpdate({ _id }, category, {
+      new: true,
+    });
+    return res.status(201).json({ updatedCategory });
+  }
 };
+// nếu ko có new:true khi dùng findoneandUpdate để chạy 1 truy vấn riêng
 
-module.exports.updateStation = (req, res, next) => {
-  const { stationId } = req.params;
-  const { name, address, province } = req.body;
-  Station.findById(stationId)
-    .then((station) => {
-      if (!station)
-        return Promise.reject({
-          status: 404,
-          Message: "Station Not Found",
-        });
-      // console.log(Station);
-      Object.keys(req.body).forEach((key) => (station[key] = req.body[key]));
-      // station.name = req.body.name ? req.body.name : station.name;
-      // station.address = req.body.address ? req.body.address : station.address;
-      // station.province = req.body.province
-      //   ? req.body.province
-      //   : station.province;
+module.exports.deleteCategory = async (req, res, next) => {
+  const ids = req.body;
+  const deletedCategories = [];
+  for (let i = 0; i < ids.length; i++) {
+    const deleteCategory = await Category.findOneAndDelete({
+      _id: ids[i]._id,
+      // createdBy: req.user._id,
+    });
+    // return res.status(201).json({ mesage: deleteCategory })
+    deletedCategories.push(deleteCategory);
+  }
 
-      return station.save();
-    })
-    .then((station) => res.status(200).json(station))
-    .catch((err) => res.status(500).json(err));
-};
-
-module.exports.getStationById = (req, res, next) => {
-  const { stationId } = req.params;
-  Station.findById(stationId)
-    .then((station) => {
-      if (!station)
-        return Promise.reject({
-          status: 404,
-          Message: "Station Not Found",
-        });
-      return res.status(200).json(station);
-    })
-    // .then((station) => res.status(200).json(station))
-    .catch((err) => res.status(500).json(err));
-};
-
-module.exports.deleteStationById = (req, res, next) => {
-  const { stationId } = req.params;
-  let _station;
-  Station.findById(stationId)
-    .then((station) => {
-      if (!station)
-        return Promise.reject({
-          status: 404,
-          Message: "Station Not Found",
-        });
-      _station = station;
-      return station.deleteOne();
-    })
-    .then(() => res.status(200).json(_station))
-    .catch((err) => res.status(500).json(err));
+  if (deletedCategories.length == ids.length) {
+    res.status(201).json({ message: "Categories removed" });
+  } else {
+    res.status(400).json({ message: "Something went wrong" });
+  }
 };

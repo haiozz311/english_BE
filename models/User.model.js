@@ -13,7 +13,6 @@ const UserSchema = mongoose.Schema({
 // dinh nghia liftcircle hook tren schema
 // viet function binh thuong ko viet arraw function vi arraw function ko co this
 UserSchema.pre("save", function (next) {
-  console.log("pre save", this);
   const user = this;
   if (!user.isModified("password")) return next();
   bcrypt

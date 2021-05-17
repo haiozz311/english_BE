@@ -5,26 +5,10 @@ const jwt = require("jsonwebtoken");
 const util = require("util");
 const jwtSign = util.promisify(jwt.sign);
 const config = require("../config/index");
-// chuyen tu callback sang promise bang promisify
+
 module.exports.createUser = (req, res, next) => {
   const { email, password, fullName, phoneNumber } = req.body;
-  // genSalt : tao ra muoi
-  // row : 10
-  // row càng lớn thì độ phức tạp của hash càng lớn
-  // validate email
-  // bcrypt
-  //   .genSalt(10)
-  //   .then((salt) => {
-  //       return bcrypt.hash(password, salt);
-  //   })
-  //   .then((hash) => {
-  //       console.log(hash);
-  //       return User.create({
-  //       email,
-  //       password: hash,
-  //       fullName,
-  //     });
-  //   })
+
   User.create({ email, password, fullName, phoneNumber })
     .then((user) => {
       res.status(200).json({ message: 'Register successfully', user });
@@ -124,7 +108,6 @@ module.exports.ResetPassWord = (req, res, next) => {
         return Promise.reject({ status: 404, message: "User Not Found" });
       _user = user;
       console.log("passs", user.password)
-      // bcrypt.
     })
     .then(() => {
       return res.status(200).json({ message: "password" });

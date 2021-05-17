@@ -1,5 +1,5 @@
 const express = require("express");
-const { createCategory, getCategory } = require("../services/Category.service");
+const { createCategory, getCategory, updateCategory, deleteCategory } = require("../services/Category.service");
 const router = express.Router();
 const { authenticate, authorization } = require("../middleware/auth/index");
 const { validateCreateCategory } = require("../middleware/validation/Category/create-category.validate");
@@ -18,5 +18,7 @@ const upload = multer({
   storage
 });
 router.get('/category', getCategory);
-router.post("/category", authenticate, authorization(["Admin"]), upload.single('categoryImage'), validateCreateCategory, createCategory);
+router.post("/PostCategory", upload.single('categoryImage'), authenticate, authorization(["Admin"]), validateCreateCategory, createCategory); //authenticate, authorization(["Admin"]),
+router.post("/update", upload.array('categoryImage'), updateCategory);
+router.post("/delete", deleteCategory);
 module.exports = router;
