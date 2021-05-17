@@ -50,31 +50,9 @@ exports.getOrders = (req, res) => {
     });
 };
 
-exports.getOrder = (req, res) => {
-  Order.findOne({ _id: req.body.orderId })
-    .populate("items.productId", "_id name productPictures")
-    .lean()
-    .exec((error, order) => {
-      if (error) return res.status(400).json({ error });
-      if (order) {
-        Address.findOne({
-          user: req.user._id,
-        }).exec((error, address) => {
-          if (error) return res.status(400).json({ error });
-          order.address = address.address.find(
-            (adr) => adr._id.toString() == order.addressId.toString()
-          );
-          res.status(200).json({
-            order,
-          });
-        });
-      }
-    });
-};
-
 exports.updateOrder = (req, res) => {
   Order.updateOne(
-    { _id: req.body.orderId, "orderStatus.type": req.body.type },
+    { user: req.body.userId, "orderStatus.type": req.body.type },
     {
       $set: {
         "orderStatus.$": [
@@ -90,9 +68,10 @@ exports.updateOrder = (req, res) => {
   });
 };
 
-exports.getCustomerOrders = async (req, res) => {
+module.exports.getCustomerOrders = async (req, res) => {
   const orders = await Order.find({})
     .populate("items.productId", "name")
     .exec();
   res.status(200).json({ orders });
 };
+
