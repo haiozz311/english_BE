@@ -55,11 +55,11 @@ module.exports.getProductbySlug = (req, res, next) => {
             res.status(200).json({
               products,
               productsByPrice: {
-                under5k: products.filter(product => product.price <= 5000),
-                under10k: products.filter(product => product.price > 5000 && product.price <= 10000),
-                under15k: products.filter(product => product.price > 10000 && product.price <= 15000),
-                under20k: products.filter(product => product.price > 15000 && product.price <= 20000),
-                under30k: products.filter(product => product.price > 20000 && product.price <= 30000),
+                under5k: products.filter(product => product.price <= 5),
+                under10k: products.filter(product => product.price > 5 && product.price <= 10),
+                under15k: products.filter(product => product.price > 10 && product.price <= 15),
+                under20k: products.filter(product => product.price > 15 && product.price <= 20),
+                under30k: products.filter(product => product.price > 20),
               }
             })
           }

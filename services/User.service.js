@@ -114,3 +114,71 @@ module.exports.ResetPassWord = (req, res, next) => {
     })
     .catch((err) => res.json(err));
 }
+
+module.exports.getUser = (req, res, next) => {
+  return User.find({ userType: 'Member' })
+    .then((users) => {
+      return res.status(200).json(users);
+    })
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
+};
+// module.exports.AddUser = (req, res, next) => {
+//   const { taiKhoan, matKhau, email, soDt, hoTen, maLoaiNguoiDung } = req.body;
+
+//   return User.create({
+//     taiKhoan,
+//     matKhau,
+//     email,
+//     soDt,
+//     hoTen,
+//     maLoaiNguoiDung,
+//   })
+//     .then((user) => {
+//       return res.status(200).json(user);
+//     })
+//     .catch((err) => {
+//       return res.status(500).json(err);
+//     });
+// };
+
+module.exports.updateUser = (req, res, next) => {
+  const { id } = req.params;
+  console.log("user", id);
+  const { password, fullName, phoneNumber } = req.body;
+  User.findById(id)
+    .then((user) => {
+      if (!user) {
+        return Promise.reject({ status: 404, message: "User Not Found" });
+      }
+      user.password = password;
+      user.fullName = fullName;
+      user.phoneNumber = phoneNumber;
+
+      return user.save();
+    })
+    .then((user) => res.status(200).json(user))
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
+};
+
+
+module.exports.deleteUser = (req, res, next) => {
+  const { id } = req.params;
+  let _user;
+  User.findById(id)
+    .then((user) => {
+      if (!user) {
+        return Promise.reject({
+          status: 404,
+          message: "User Not Found",
+        });
+      }
+      _user = user;
+      return user.deleteOne();
+    })
+    .then(() => res.status(200).json({ message: "delete successfully" }))
+    .catch((err) => res.status(500).json({ message: err.message }));
+};

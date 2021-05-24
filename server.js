@@ -12,6 +12,11 @@ const cartController = require("./controllers/Cart.controller");
 const PageController = require("./controllers/Page.controller");
 const AddressController = require("./controllers/Address.controller");
 const OrderController = require("./controllers/Order.controller");
+const CategoryEnglishTypeController = require("./controllers/CategoryEnglishType");
+const TopicEnglishController = require("./controllers/TopicEnglish");
+const WordController = require("./controllers/Word.controller");
+const ChapterController = require("./controllers/Chapter.controller");
+
 // handle Router
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,6 +30,11 @@ app.use("/api", cartController);
 app.use("/api", PageController);
 app.use("/api", AddressController);
 app.use("/api", OrderController);
+app.use("/api", CategoryEnglishTypeController);
+app.use("/api", ChapterController);
+app.use("/api", TopicEnglishController);
+app.use("/api", WordController);
+
 
 // app.use("/img", express.static("img"));
 // img1 la ten duong dan tren brower
