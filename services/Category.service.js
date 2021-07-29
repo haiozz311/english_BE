@@ -7,7 +7,6 @@ function createCate(categories, parentId = null) {
   const categoryList = [];
   let category;
   if (parentId == null) {
-    console.log("categories", categories);
     category = categories.filter(cate => cate.parentId == undefined)
   } else {
     category = categories.filter(cate => cate.parentId == parentId)

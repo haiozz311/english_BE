@@ -16,6 +16,11 @@ const CategoryEnglishTypeController = require("./controllers/CategoryEnglishType
 const TopicEnglishController = require("./controllers/TopicEnglish");
 const WordController = require("./controllers/Word.controller");
 const ChapterController = require("./controllers/Chapter.controller");
+const QuestionController = require("./controllers/Question.controller");
+const ParagraphsController = require("./controllers/Paragraphs.controller");
+const ReadingController = require("./controllers/Reading.controller");
+const AnswerController = require("./controllers/Answer.controller");
+const ListenController = require("./controllers/Listen.controller");
 
 // handle Router
 app.use(bodyParser.json());
@@ -34,8 +39,18 @@ app.use("/api", CategoryEnglishTypeController);
 app.use("/api", ChapterController);
 app.use("/api", TopicEnglishController);
 app.use("/api", WordController);
+app.use("/api", QuestionController);
+app.use("/api", ParagraphsController);
+app.use("/api", ReadingController);
+app.use("/api", AnswerController);
+app.use("/api", ListenController);
 
-
+app.use((err, req, res, next) => {
+  res.locals.error = err;
+  const status = err.status || 500;
+  res.status(status);
+  res.render('error');
+});
 // app.use("/img", express.static("img"));
 // img1 la ten duong dan tren brower
 // img2 la thu muc chua tam hinh cua minh

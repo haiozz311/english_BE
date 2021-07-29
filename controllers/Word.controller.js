@@ -1,5 +1,5 @@
 const express = require("express");
-const { createWord, getWord, getWordById } = require("../services/Word.service");
+const { createWord, getWord, getWordById, DeleteWordById, updateWordById, createWord1 } = require("../services/Word.service");
 const router = express.Router();
 const { authenticate, authorization } = require("../middleware/auth/index");
 const multer = require('multer');
@@ -36,5 +36,22 @@ router.get("/getWord",
 router.get("/getWord/:topicId",
   // authenticate, authorization(["Admin"]),
   getWordById);
+router.delete("/deleteWord/:wordId",
+  // authenticate, authorization(["Admin"]),
+  DeleteWordById);
+
+router.put("/updateWord/:wordId", upload.fields([
+  { name: 'audioDictionaryUK' }
+  ,
+  {
+    name: 'audioDictionaryUS'
+  },
+  { name: 'audioExampleSentencesUK' }
+  ,
+  {
+    name: 'audioExampleSentencesUS'
+  }
+]),
+  updateWordById);
 module.exports = router;
 

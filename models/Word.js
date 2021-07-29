@@ -26,10 +26,15 @@ const WordSchema = mongoose.Schema({
   exampleSentencesTranslate: { type: String },
   translate: { type: String },
   vocabulary: { type: String },
+  spelling: { type: String },
   topicId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "TopicEnglish",
   },
+  answerList: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Question",
+  }]
 }, { timestamps: true });
 
 const Word = mongoose.model("Word", WordSchema, "Word");
